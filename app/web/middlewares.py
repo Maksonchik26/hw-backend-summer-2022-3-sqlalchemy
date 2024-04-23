@@ -1,13 +1,14 @@
 import json
-import typing
+from typing import Callable, TYPE_CHECKING
 
 from aiohttp.web_exceptions import HTTPException, HTTPUnprocessableEntity
 from aiohttp.web_middlewares import middleware
 from aiohttp_apispec import validation_middleware
+import aiohttp_session
 
 from app.web.utils import error_json_response
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from app.web.app import Application, Request
 
 
@@ -48,6 +49,18 @@ async def error_handling_middleware(request: "Request", handler):
     return response
 
 
+@middleware
+async def auth_middleware(request: "Request", handler: Callable):
+    session = await aiohttp_session.get_session(request)
+    if session:
+        request.admin = session["admin"]
+    else:
+        request.admin = None
+
+    return await handler(request)
+
+
 def setup_middlewares(app: "Application"):
     app.middlewares.append(error_handling_middleware)
     app.middlewares.append(validation_middleware)
+    app.middlewares.append(auth_middleware)

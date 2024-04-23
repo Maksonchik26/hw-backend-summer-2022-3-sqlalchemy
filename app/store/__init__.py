@@ -8,6 +8,7 @@ if typing.TYPE_CHECKING:
 
 class Store:
     def __init__(self, app: "Application"):
+        self.app = None
         from app.store.admin.accessor import AdminAccessor
         from app.store.bot.manager import BotManager
         from app.store.quiz.accessor import QuizAccessor

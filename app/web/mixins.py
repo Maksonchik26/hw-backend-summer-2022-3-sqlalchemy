@@ -1,10 +1,12 @@
+import aiohttp_session
 from aiohttp.abc import StreamResponse
-from aiohttp.web_exceptions import HTTPUnauthorized
+from aiohttp.web_exceptions import HTTPUnauthorized, HTTPForbidden
+
+from app.web.app import Request, Application
 
 
 class AuthRequiredMixin:
-    async def _iter(self) -> StreamResponse:
+    async def check_auth_admin(self):
         if self.request.admin is None:
             raise HTTPUnauthorized
-
-        return await super()._iter()
+        return self.request.admin

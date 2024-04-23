@@ -1,7 +1,19 @@
 from marshmallow import Schema, fields
 
+from app.web.schemes import OkResponseSchema
 
-class AdminSchema(Schema):
-    id = fields.Int(required=False)
+
+class DefaultAdminSchema(Schema):
     email = fields.Str(required=True)
-    password = fields.Str(required=True, load_only=True)
+
+
+class LoginAdminRequestSchema(DefaultAdminSchema):
+    password = fields.Str(required=True)
+
+
+class AdminSchema(DefaultAdminSchema):
+    id = fields.Integer(required=True)
+
+
+class AdminResponseSchema(OkResponseSchema):
+    data = fields.Nested(AdminSchema)

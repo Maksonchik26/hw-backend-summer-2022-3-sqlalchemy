@@ -1,3 +1,5 @@
+import base64
+
 from aiohttp.web import json_response as aiohttp_json_response
 from aiohttp.web_response import Response
 
@@ -25,3 +27,8 @@ def error_json_response(
             "data": data or {},
         },
     )
+
+
+def hash_password(password: str):
+    password = base64.b64encode(password.encode("UTF-8")).decode()
+    return password
