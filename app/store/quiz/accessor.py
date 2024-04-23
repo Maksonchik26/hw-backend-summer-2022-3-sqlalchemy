@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 from sqlalchemy import select, ScalarResult
 from sqlalchemy.orm import selectinload
 
@@ -50,7 +50,9 @@ class QuizAccessor(BaseAccessor):
 
     async def get_question_by_title(self, title: str) -> QuestionModel | None:
         async with self.app.database.session() as session:
-            result = await session.scalar(select(QuestionModel).options(selectinload(QuestionModel.answers)).where(QuestionModel.title == title))
+            result = await session.scalar(select(QuestionModel).
+                                          options(selectinload(QuestionModel.answers)).
+                                          where(QuestionModel.title == title))
 
             return result
 
@@ -59,7 +61,9 @@ class QuizAccessor(BaseAccessor):
     ) -> ScalarResult[QuestionModel]:
         async with self.app.database.session() as session:
             if theme_id:
-                result = await session.scalars(select(QuestionModel).options(selectinload(QuestionModel.answers)).where(QuestionModel.theme_id == theme_id))
+                result = await session.scalars(select(QuestionModel).
+                                               options(selectinload(QuestionModel.answers)).
+                                               where(QuestionModel.theme_id == theme_id))
             else:
                 result = await session.scalars(select(QuestionModel).options(selectinload(QuestionModel.answers)))
 
